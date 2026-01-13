@@ -4,7 +4,7 @@
 console.log("🚀 ResumeOS AI Optimizer Initialized!");
 
 // 🔐 REPLACE THIS WITH YOUR OPENAI API KEY
-const OPENAI_API_KEY = "YOUR_OPENAI_API_KEY_HERE"; // Get from: https://platform.openai.com/api-keys
+const OPENAI_API_KEY = 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; // Get from: https://platform.openai.com/api-keys
 
 // Resume State
 let resumeData = {
