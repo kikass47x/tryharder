@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeOS — AI-Powered Resume Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Space-inspired color palette */
+            --primary: #00d4ff;
+            --primary-glow: rgba(0, 212, 255, 0.4);
+            --secondary: #9d4edd;
+            --accent: #ff006e;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --success: #00ff9d;
+            --warning: #ffbe0b;
+            --error: #ff3860;
+            
+            /* Effects */
+            --glass-blur: blur(20px);
+            --shadow-glow: 0 0 40px rgba(0, 212, 255, 0.2);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(157, 78, 221, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 20%);
+        }
+        
+        /* Futuristic Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        
+        /* Navigation - Apple Style */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-glass);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Glass Effect Buttons */
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.7s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-glass);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-primary);
+            border: 1px solid var(--border-glass);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.1);
+        }
+        
+        /* Hero Section - Futuristic Design */
+        .hero {
+            padding: 12rem 5% 8rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 30%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+        
+        /* Features Grid - Apple Card Style */
+        .features {
+            padding: 6rem 5%;
+            background: var(--bg-secondary);
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .section-title p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: var(--bg-glass);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow), var(--shadow-card);
+        }
+        
+        .feature-icon {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        /* Resume Builder Section - Glass Morphism */
+        #builder {
+            padding: 6rem 5%;
+            position: relative;
+        }
+        
+        .builder-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 1100px) {
+            .builder-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .builder-form {
+            background: var(--bg-glass);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-card);
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .resume-preview {
+            background: var(--bg-glass);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resume-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(157, 78, 221, 0.2) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .preview-content {
+            min-height: 600px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            z-index: 1;
+            border: 1px solid var(--border-glass);
+        }
+        
+        .template-selector {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Enhanced Job Tailoring Section */
+        #jobTailor {
+            padding: 6rem 5%;
+            background: var(--bg-secondary);
+            position: relative;
+        }
+        
+        /* Mode Selector Styles */
+        .mode-selector {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+        }
+        
+        .mode-tabs {
+            display: flex;
+            gap: 1px;
+            background: var(--bg-glass);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-glass);
+        }
+        
+        .mode-tab {
+            flex: 1;
+            padding: 1.2rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .mode-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .mode-tab.active {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        }
+        
+        .mode-panel {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .mode-panel.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Feature Badges */
+        .feature-badge {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* URL Input Group */
+        .url-input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Upload Zone Enhancements */
+        .upload-zone {
+            border: 2px dashed var(--border-glass);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+        
+        .upload-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.1);
+            transform: scale(1.02);
+        }
+        
+        /* Analysis Items */
+        .analysis-item {
+            background: var(--bg-glass);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            border-radius: 16px;
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+        }
+        
+        .analysis-item.warning {
+            border-left-color: var(--warning);
+        }
+        
+        .analysis-item.success {
+            border-left-color: var(--success);
+        }
+        
+        .match-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 1.5rem 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .keyword-match {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.3rem;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            100% { left: 100%; }
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            padding: 8rem 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+        }
+        
+        .cta h2 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 30%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid var(--border-glass);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .footer-section p, 
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.8rem;
+            display: block;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+        
+        /* Resume Preview Styling */
+        .resume-template {
+            line-height: 1.6;
+        }
+        
+        .resume-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+        }
+        
+        .resume-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .resume-header h1 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+        
+        .resume-section {
+            margin-bottom: 2rem;
+        }
+        
+        .resume-section h3 {
+            color: var(--primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        
+        .experience-item {
+            margin-bottom: 1.8rem;
+            padding-bottom: 1.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .experience-item:last-child {
+            border-bottom: none;
+        }
+        
+        .job-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+        
+        .company {
+            color: var(--primary);
+            font-style: italic;
+            margin: 0.3rem 0;
+        }
+        
+        .date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .builder-container {
+                gap: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.5rem;
+            }
+            
+            .mode-tabs {
+                flex-direction: column;
+            }
+        }
+        
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--bg-glass);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-card);
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .notification.error {
+            border-left: 4px solid var(--error);
+        }
+        
+        .notification.info {
+            border-left: 4px solid var(--primary);
+        }
+        
+        /* Floating Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Action Buttons Animation */
+        #actionButtons {
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Spinner Animation */
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            ResumeOS
+        </div>
+        <div class="nav-links">
+            <a href="#features">Capabilities</a>
+            <a href="#builder">Builder</a>
+            <a href="#jobTailor">AI Match</a>
+            <a href="#templates">Templates</a>
+            <button class="btn btn-outline">Sign In</button>
+            <button class="btn btn-primary" id="startBuilding">Launch Builder</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Craft Resumes<br>From The Future</h1>
+            <p class="hero-subtitle">
+                Where AI meets design. Create professional, ATS-optimized resumes with 
+                futuristic templates that land interviews in 2024 and beyond.
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" id="startBuilding2" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+                    <i class="fas fa-bolt"></i> Start Building Free
+                </button>
+                <button class="btn btn-secondary" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+                    <i class="fas fa-play-circle"></i> Watch Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Next-Gen Resume Technology</h2>
+            <p>Powered by advanced AI and cutting-edge design systems</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Neural AI Writing</h3>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Our AI generates professional bullet points and summaries that sound human, 
+                    using GPT-4 level technology.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>ATS Forcefield</h3>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Optimize your resume to pass through Applicant Tracking Systems with 99.7% 
+                    success rate guarantee.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h3>Holographic Templates</h3>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Choose from 50+ futuristic templates with glass morphism, neon accents, 
+                    and animated elements.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Quantum Export</h3>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Export to PDF, DOCX, or interactive web format with one click. 
+                    All files are optimized for digital submission.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resume Builder Section -->
+    <section id="builder">
+        <div class="section-title">
+            <h2>Quantum Resume Builder</h2>
+            <p>Real-time editing with live preview. See changes instantly.</p>
+        </div>
+        
+        <div class="builder-container">
+            <!-- Left: Form -->
+            <div class="builder-form">
+                <h3 style="margin-bottom: 2rem; color: var(--primary); font-size: 1.5rem;">
+                    <i class="fas fa-user-astronaut"></i> Personal Information
+                </h3>
+                
+                <div class="form-group">
+                    <label for="inputName"><i class="fas fa-signature"></i> Full Name *</label>
+                    <input type="text" id="inputName" class="form-control" placeholder="Elon Musk">
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputEmail"><i class="fas fa-envelope"></i> Email Address *</label>
+                    <input type="email" id="inputEmail" class="form-control" placeholder="elon@spacex.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputPhone"><i class="fas fa-mobile-alt"></i> Quantum Link</label>
+                    <input type="tel" id="inputPhone" class="form-control" placeholder="+1 (555) 2024-2025">
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputLocation"><i class="fas fa-map-marker-alt"></i> Location</label>
+                    <input type="text" id="inputLocation" class="form-control" placeholder="Mars Colony, SpaceX">
+                </div>
+                
+                <button id="savePersonal" class="btn btn-primary" style="width: 100%; padding: 1.2rem; margin-top: 1rem;">
+                    <i class="fas fa-save"></i> Sync to Neural Cloud
+                </button>
+                
+                <hr style="margin: 2.5rem 0; border-color: var(--border-glass);">
+                
+                <h3 style="margin-bottom: 2rem; color: var(--primary); font-size: 1.5rem;">
+                    <i class="fas fa-briefcase"></i> Add Work Experience
+                </h3>
+                
+                <div class="form-group">
+                    <label for="inputCompany"><i class="fas fa-building"></i> Corporation *</label>
+                    <input type="text" id="inputCompany" class="form-control" placeholder="SpaceX">
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputPosition"><i class="fas fa-user-tie"></i> Position Title *</label>
+                    <input type="text" id="inputPosition" class="form-control" placeholder="Chief Rocket Engineer">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label for="inputStartDate">Start Date</label>
+                        <input type="text" id="inputStartDate" class="form-control" placeholder="Q1 2022">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEndDate">End Date</label>
+                        <input type="text" id="inputEndDate" class="form-control" placeholder="Present">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputDescription">Description</label>
+                    <textarea id="inputDescription" class="form-control" rows="4" 
+                              placeholder="Describe your achievements with metrics..."></textarea>
+                </div>
+                
+                <button id="addExperience" class="btn btn-secondary" style="width: 100%; padding: 1.2rem;">
+                    <i class="fas fa-plus-circle"></i> Add to Timeline
+                </button>
+                
+                <div style="margin-top: 2.5rem;">
+                    <button id="generatePDF" class="btn btn-primary" 
+                            style="width: 100%; padding: 1.3rem; font-size: 1.1rem; background: linear-gradient(135deg, var(--success), #00cc88);">
+                        <i class="fas fa-download"></i> Quantum Export (PDF)
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right: Preview -->
+            <div class="resume-preview">
+                <h3 style="margin-bottom: 2rem; color: var(--primary); font-size: 1.5rem;">
+                    <i class="fas fa-eye"></i> Holographic Preview
+                </h3>
+                
+                <div id="resumePreview" class="preview-content">
+                    <div class="resume-template">
+                        <div class="resume-header">
+                            <h1 id="previewName">Elon Musk</h1>
+                            <div id="previewContact">
+                                <p>elon@spacex.com | +1 (555) 2024-2025 | Mars Colony, SpaceX</p>
+                            </div>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3>Professional Summary</h3>
+                            <p id="previewSummary">Visionary engineer and entrepreneur focused on making humanity multi-planetary. 
+                            Proven track record of disrupting industries through technological innovation.</p>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3>Work Experience</h3>
+                            <div id="previewExperience">
+                                <div class="experience-item">
+                                    <div class="job-title">Chief Rocket Engineer</div>
+                                    <div class="company">SpaceX</div>
+                                    <div class="date">Q1 2022 - Present</div>
+                                    <p>Led development of Starship spacecraft for Mars colonization. Reduced launch costs by 90% through reusable rocket technology.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3>Education</h3>
+                            <div id="previewEducation">
+                                <p>Bachelor of Science in Physics - University of Pennsylvania</p>
+                                <p>Bachelor of Science in Economics - Wharton School of Business</p>
+                            </div>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3>Core Competencies</h3>
+                            <div id="previewSkills">
+                                <p>Rocket Propulsion, Neural Networks, Quantum Computing, Renewable Energy, AI Ethics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2.5rem;">
+                    <h4 style="margin-bottom: 1.2rem; color: var(--text-secondary);">
+                        <i class="fas fa-palette"></i> Select Template Matrix:
+                    </h4>
+                    <div class="template-selector">
+                        <button class="btn template-select" data-template="neon" 
+                                style="background: linear-gradient(135deg, #00d4ff, #0099ff); color: white;">
+                            <i class="fas fa-bolt"></i> Neon
+                        </button>
+                        <button class="btn template-select" data-template="quantum" 
+                                style="background: linear-gradient(135deg, #9d4edd, #560bad); color: white;">
+                            <i class="fas fa-atom"></i> Quantum
+                        </button>
+                        <button class="btn template-select" data-template="cyber" 
+                                style="background: linear-gradient(135deg, #ff006e, #ff5e00); color: white;">
+                            <i class="fas fa-terminal"></i> Cyber
+                        </button>
+                        <button class="btn template-select" data-template="holo" 
+                                style="background: linear-gradient(135deg, #00ff9d, #00b4d8); color: black;">
+                            <i class="fas fa-cube"></i> Hologram
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Job Tailoring Section -->
+    <section id="jobTailor" style="padding: 6rem 5%; background: var(--bg-secondary);">
+        <div class="section-title">
+            <h2><i class="fas fa-robot"></i> AI Resume Optimizer</h2>
+            <p>Two ways to match your resume with dream jobs using real AI</p>
+        </div>
+        
+        <!-- Dual Mode Selector -->
+        <div class="mode-selector">
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="upload">
+                    <i class="fas fa-file-upload"></i> Upload & Match
+                </button>
+                <button class="mode-tab" data-mode="url">
+                    <i class="fas fa-globe"></i> Website Analysis
+                </button>
+            </div>
+            
+            <div class="mode-content">
+                <!-- Mode 1: Upload & Match -->
+                <div class="mode-panel active" id="uploadPanel">
+                    <div class="builder-form">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--primary);">
+                            <i class="fas fa-file-import"></i> Step 1: Upload Your Resume
+                        </h3>
+                        
+                        <div class="upload-zone" id="uploadZone">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                            <p style="margin-bottom: 1rem;">Drag & drop your resume here</p>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                                Supports: PDF, DOCX, TXT (Max: 5MB)
+                            </p>
+                            <button id="uploadBtn" class="btn btn-outline">
+                                <i class="fas fa-folder-open"></i> Browse Files
+                            </button>
+                            <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+                        </div>
+                        <p id="uploadStatus" style="margin-top: 1rem; font-size: 0.9rem;"></p>
+                        
+                        <div class="form-group" style="margin-top: 2rem;">
+                            <label for="jobDescription">
+                                <i class="fas fa-briefcase"></i> Step 2: Paste Job Description
+                            </label>
+                            <textarea id="jobDescription" class="form-control" rows="6" 
+                                      placeholder="Paste the full job description here..."></textarea>
+                        </div>
+                        
+                        <button id="analyzeBtn" class="btn btn-primary" style="width: 100%; padding: 1.2rem; margin-top: 1rem;">
+                            <i class="fas fa-brain"></i> AI Analyze & Optimize
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Mode 2: Website Analysis -->
+                <div class="mode-panel" id="urlPanel">
+                    <div class="builder-form">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--primary);">
+                            <i class="fas fa-magic"></i> Smart URL Analysis
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="jobURL">
+                                <i class="fas fa-link"></i> Paste Job URL
+                            </label>
+                            <div style="display: flex; gap: 1rem;">
+                                <input type="url" id="jobURL" class="form-control" 
+                                       placeholder="https://www.linkedin.com/jobs/view/... or https://company.com/careers/...">
+                                <button id="fetchJobBtn" class="btn btn-secondary" style="white-space: nowrap;">
+                                    <i class="fas fa-download"></i> Fetch
+                                </button>
+                            </div>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Works with: LinkedIn, Indeed, Glassdoor, Company Career Pages
+                            </p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-file-alt"></i> Extracted Job Description
+                            </label>
+                            <div id="extractedJob" class="form-control" style="height: 200px; overflow-y: auto; background: rgba(255,255,255,0.05);">
+                                <div style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+                                    <i class="fas fa-spider-web" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                    <p>Job description will appear here after fetching URL</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="analyzeURLBtn" class="btn btn-primary" style="width: 100%; padding: 1.2rem;">
+                            <i class="fas fa-robot"></i> AI Analyze from Website
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Analysis Results -->
+        <div class="resume-preview" style="margin-top: 3rem;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary);">
+                <i class="fas fa-chart-network"></i> AI Optimization Results
+            </h3>
+            
+            <div id="analysisResults" style="min-height: 500px; padding: 2rem; background: var(--bg-glass); border-radius: 16px; border: 1px solid var(--border-glass);">
+                <div style="text-align: center; padding: 4rem 1rem; color: var(--text-secondary);">
+                    <i class="fas fa-stars" style="font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.5;"></i>
+                    <h4>AI Analysis Ready</h4>
+                    <p>Choose a method above to get real AI-powered resume optimization</p>
+                    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                        <div class="feature-badge">
+                            <i class="fas fa-bolt"></i> Keyword Matching
+                        </div>
+                        <div class="feature-badge">
+                            <i class="fas fa-shield-alt"></i> ATS Optimization
+                        </div>
+                        <div class="feature-badge">
+                            <i class="fas fa-magic"></i> Auto-Improvement
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Action Buttons -->
+            <div id="actionButtons" style="display: none; margin-top: 2rem; text-align: center;">
+                <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                    <i class="fas fa-wand-magic-sparkles"></i> Apply AI Suggestions
+                </h4>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button id="applyKeywordsBtn" class="btn" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                        <i class="fas fa-key"></i> Add Keywords
+                    </button>
+                    <button id="rewriteExperienceBtn" class="btn" style="background: linear-gradient(135deg, var(--accent), #ff5e00);">
+                        <i class="fas fa-edit"></i> Rewrite Experience
+                    </button>
+                    <button id="enhanceSummaryBtn" class="btn" style="background: linear-gradient(135deg, var(--success), #00cc88);">
+                        <i class="fas fa-sparkles"></i> Enhance Summary
+                    </button>
+                    <button id="applyAllBtn" class="btn" style="background: linear-gradient(135deg, #9d4edd, #560bad);">
+                        <i class="fas fa-bolt"></i> Apply All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <h2>Ready to Land Your Dream Job?</h2>
+        <p style="margin-bottom: 2rem; font-size: 1.2rem;">Join thousands who got hired with our resumes</p>
+        <button class="btn" style="background: white; color: var(--primary); font-size: 1.2rem; padding: 1rem 3rem;">
+            Create Your Resume Now
+        </button>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3 class="logo">ResumeOS</h3>
+                <p>AI-powered resume builder to help you land more interviews.</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <p>Features</p>
+                <p>Templates</p>
+                <p>Pricing</p>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <p>About</p>
+                <p>Blog</p>
+                <p>Contact</p>
+            </div>
+        </div>
+        <div style="text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p>&copy; 2023 ResumeOS. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
